@@ -25,7 +25,7 @@
     margin:0;
     background: linear-gradient(180deg,#04121a 0%, #071827 60%);
     color:var(--white);
-    font-family: 'Inter', system-ui;
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     min-height:100vh;
   }
 
@@ -48,14 +48,13 @@
   header .title {
     display:flex;
     flex-direction:column;
+    line-height:1;
   }
-
   header .title h1{
     margin:0;
     font-size:20px;
     letter-spacing:1px;
   }
-
   header .title p {
     margin:0;
     font-size:12px;
@@ -66,12 +65,13 @@
     display:flex;
     gap:28px;
     padding:26px;
+    align-items:flex-start;
     justify-content:center;
   }
 
   .panel {
     width: 420px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    background: rgba(255,255,255,0.02);
     border-radius:12px;
     padding:18px;
     border: 1px solid var(--card-border);
@@ -96,7 +96,11 @@
     font-size:15px;
   }
 
-  .row { display:flex; gap:10px; margin-top:12px; }
+  .row {
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
   .btn {
     flex:1;
     padding:11px;
@@ -110,24 +114,16 @@
   .btn-add{
     background: linear-gradient(180deg,var(--accent),var(--accent-2));
     color:#001827;
-    box-shadow:0 8px 20px rgba(14,165,255,0.16);
   }
 
   .btn-clear{
     background: rgba(255,255,255,0.04);
     color:var(--white);
-    border:1px solid rgba(255,255,255,0.03);
-  }
-
-  .small-muted{
-    font-size:13px;
-    color:var(--muted);
-    margin-top:8px;
   }
 
   .results {
     width:480px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    background: rgba(255,255,255,0.02);
     border-radius:12px;
     padding:18px;
     border:1px solid var(--card-border);
@@ -137,21 +133,6 @@
   .results h3{
     margin:0 0 8px 0;
     color:var(--accent);
-    font-size:16px;
-  }
-
-  .cart-list{
-    margin-top:8px;
-    border-radius:8px;
-    overflow:hidden;
-  }
-
-  .cart-item{
-    display:flex;
-    justify-content:space-between;
-    padding:10px;
-    border-bottom:1px dashed rgba(255,255,255,0.03);
-    font-weight:600;
   }
 
   .materials {
@@ -168,18 +149,24 @@
     border:1px solid rgba(255,255,255,0.02);
   }
 
-  .mat b{display:block; font-size:14px;}
+  .mat b{display:block; font-size:14px}
   .mat span{color:var(--muted); font-size:13px}
 
   .big-total{
     margin-top:14px;
     padding:12px;
     border-radius:10px;
-    background:linear-gradient(180deg, rgba(14,165,255,0.06), rgba(11,100,179,0.03));
+    background:rgba(14,165,255,0.05);
     color:var(--accent);
     font-weight:800;
-    font-size:17px;
     text-align:center;
+    font-size:16px;
+  }
+
+  .footer-actions{
+    margin-top:14px;
+    display:flex;
+    gap:10px;
   }
 
 </style>
@@ -199,14 +186,14 @@
   <section class="panel">
     <h2>Nova Fabricação</h2>
 
-    <label>Selecione o item</label>
+    <label for="item">Selecione o item</label>
     <select id="item">
       <option value="mp5">MP5</option>
       <option value="aug">AUG</option>
       <option value="c4">C4 Grande</option>
     </select>
 
-    <label>Quantidade</label>
+    <label for="qty">Quantidade</label>
     <input id="qty" type="number" min="1" value="1" />
 
     <div class="row">
@@ -214,26 +201,20 @@
       <button class="btn btn-clear" id="btnClearLocal">LIMPAR</button>
     </div>
 
-    <div class="small-muted">Você pode adicionar várias receitas — elas serão somadas.</div>
-
     <div style="margin-top:18px;">
-      <h2 style="font-size:14px;color:var(--muted)">Itens adicionados</h2>
-      <div id="cart" class="cart-list" style="max-height:220px;overflow:auto;"></div>
+      <h2 style="font-size:14px; color:var(--muted)">Itens adicionados</h2>
+      <div id="cart" style="max-height:220px; overflow:auto;"></div>
     </div>
   </section>
 
   <aside class="results">
     <h3>Materiais necessários</h3>
-
     <div id="materials" class="materials"></div>
 
-    <div class="big-total" id="grandTotal">
-      TOTAL
-    </div>
+    <div class="big-total" id="grandTotal">Itens: 0 • Materiais distintos: 0</div>
 
-    <div class="footer-actions" style="display:flex; gap:10px; margin-top:10px;">
+    <div class="footer-actions">
       <button class="btn btn-clear" id="btnReset">LIMPAR TUDO</button>
-      <button class="btn btn-add" id="btnExport">EXPORTAR JSON</button>
     </div>
   </aside>
 
@@ -241,134 +222,141 @@
 
 <script>
 const RECIPES = {
-  mp5:{
-    name:"MP5",
-    materials:{ "Alumínio":175,"Cobre":205,"Pregos Pequenos":2,"Tubo de Plástico":2,"Borracha":205,"Parafusos Pequenos":2,"Corpo de Sub":1,"Peças de Armas":4 }
+  mp5: {
+    name: "MP5",
+    materials: {
+      "Alumínio": 175,
+      "Cobre": 205,
+      "Pregos Pequenos": 2,
+      "Tubo de Plástico": 2,
+      "Borracha": 205,
+      "Parafusos Pequenos": 2,
+      "Corpo de Sub": 1,
+      "Peças de Armas": 4
+    }
   },
-  aug:{
-    name:"AUG",
-    materials:{ "Alumínio":225,"Cobre":265,"Pregos Pequenos":4,"Tubo de Plástico":4,"Borracha":265,"Parafusos Pequenos":4,"Corpo de Rifle":1,"Peças de Armas":6 }
+  aug: {
+    name: "AUG",
+    materials: {
+      "Alumínio": 225,
+      "Cobre": 265,
+      "Pregos Pequenos": 4,
+      "Tubo de Plástico": 4,
+      "Borracha": 265,
+      "Parafusos Pequenos": 4,
+      "Corpo de Rifle": 1,
+      "Peças de Armas": 6
+    }
   },
-  c4:{
-    name:"C4 Grande",
-    materials:{ "C4 Pequena":1,"Plástico":150,"Dinamite":60,"Fios":45,"Parafusos Médios":15,"Circuito Avançado":5 }
+  c4: {
+    name: "C4 Grande",
+    materials: {
+      "C4 Pequena": 1,
+      "Plástico": 150,
+      "Dinamite": 60,
+      "Fios": 45,
+      "Parafusos Médios": 15,
+      "Circuito Avançado": 5
+    }
   }
 };
 
-let cart=[];
-let aggregate={};
+let cart = [];
+let aggregate = {};
 
-const itemEl=document.getElementById('item');
-const qtyEl=document.getElementById('qty');
-const btnAdd=document.getElementById('btnAdd');
-const btnClearLocal=document.getElementById('btnClearLocal');
-const cartDiv=document.getElementById('cart');
-const materialsDiv=document.getElementById('materials');
-const grandTotalEl=document.getElementById('grandTotal');
-const btnReset=document.getElementById('btnReset');
-const btnExport=document.getElementById('btnExport');
+const itemEl = document.getElementById('item');
+const qtyEl = document.getElementById('qty');
+const cartDiv = document.getElementById('cart');
+const materialsDiv = document.getElementById('materials');
+const grandTotalEl = document.getElementById('grandTotal');
 
-function formatNumber(n){ return n.toLocaleString('pt-BR'); }
+document.getElementById('btnAdd').addEventListener('click', ()=>{
+  const key = itemEl.value;
+  const qty = parseInt(qtyEl.value);
+  if(qty < 1) return;
 
-btnAdd.addEventListener('click',()=>{
-  const key=itemEl.value;
-  const qty=parseInt(qtyEl.value)||0;
-  if(qty<=0){ alert("Quantidade inválida"); return; }
-  cart.push({key,qty});
-  recalcAggregate();
+  cart.push({ key, qty });
+  recalc();
+});
+
+document.getElementById('btnClearLocal').addEventListener('click', ()=>{
+  itemEl.selectedIndex = 0;
+  qtyEl.value = 1;
+});
+
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  cart = [];
+  aggregate = {};
   renderCart();
   renderMaterials();
 });
 
-btnClearLocal.addEventListener('click',()=>{
-  qtyEl.value=1;
-  itemEl.selectedIndex=0;
-});
-
-function recalcAggregate(){
-  aggregate={};
+function recalc(){
+  aggregate = {};
   cart.forEach(entry=>{
-    const recipe=RECIPES[entry.key];
-    for(const mat in recipe.materials){
-      aggregate[mat]=(aggregate[mat]||0)+(recipe.materials[mat]*entry.qty);
+    const r = RECIPES[entry.key];
+    for(const mat in r.materials){
+      aggregate[mat] = (aggregate[mat]||0) + r.materials[mat] * entry.qty;
     }
   });
+  renderCart();
+  renderMaterials();
 }
 
 function renderCart(){
-  cartDiv.innerHTML="";
-  if(cart.length===0){
-    cartDiv.innerHTML='<div style="padding:10px;color:var(--muted)">Nenhuma fabricação adicionada.</div>';
+  cartDiv.innerHTML = '';
+  if(cart.length === 0){
+    cartDiv.innerHTML = '<div style="color:var(--muted);padding:10px">Nenhuma fabricação adicionada.</div>';
     return;
   }
-  cart.forEach((c,idx)=>{
-    const recipe=RECIPES[c.key];
-    const div=document.createElement('div');
-    div.className='cart-item';
-    div.innerHTML=`${recipe.name} × ${c.qty}`;
 
-    const remove=document.createElement('button');
-    remove.textContent="✕";
-    remove.style.background='transparent';
-    remove.style.border='none';
-    remove.style.color='white';
-    remove.style.cursor='pointer';
-    remove.onclick=()=>{
+  cart.forEach((c,idx)=>{
+    const r = RECIPES[c.key];
+    const div = document.createElement('div');
+    div.style.padding = '8px';
+    div.style.borderBottom = '1px dashed rgba(255,255,255,0.04)';
+    div.style.position = 'relative';
+    div.innerHTML = `${r.name} × ${c.qty}`;
+
+    const rm = document.createElement('button');
+    rm.textContent = '✕';
+    rm.style.position='absolute';
+    rm.style.right='6px';
+    rm.style.top='6px';
+    rm.style.border='none';
+    rm.style.background='transparent';
+    rm.style.color='rgba(255,255,255,0.6)';
+    rm.onclick = ()=>{
       cart.splice(idx,1);
-      recalcAggregate();
-      renderCart();
-      renderMaterials();
+      recalc();
     };
 
-    div.appendChild(remove);
+    div.appendChild(rm);
     cartDiv.appendChild(div);
   });
 }
 
 function renderMaterials(){
-  materialsDiv.innerHTML="";
-
-  const mats=Object.keys(aggregate);
-
-  if(mats.length===0){
-    materialsDiv.innerHTML='<div style="color:var(--muted)">Adicione itens.</div>';
-    grandTotalEl.textContent="TOTAL";
+  materialsDiv.innerHTML = '';
+  const keys = Object.keys(aggregate);
+  if(keys.length === 0){
+    materialsDiv.innerHTML = '<div style="color:var(--muted)">Adicione itens para ver os materiais.</div>';
+    grandTotalEl.textContent = 'Itens: 0 • Materiais distintos: 0';
     return;
   }
 
-  mats.sort();
-  mats.forEach(k=>{
-    const el=document.createElement('div');
-    el.className='mat';
-    el.innerHTML=`<b>${k}</b><span>${formatNumber(aggregate[k])}</span>`;
-    materialsDiv.appendChild(el);
+  keys.sort().forEach(k=>{
+    const mat = document.createElement('div');
+    mat.className='mat';
+    mat.innerHTML = `<b>${k}</b><span>${aggregate[k]}</span>`;
+    materialsDiv.appendChild(mat);
   });
 
-  let totalItems=cart.reduce((s,c)=>s+c.qty,0);
-  let totalMaterials=Object.values(aggregate).reduce((s,n)=>s+n,0);
-  let distinct=mats.length;
+  let totalItens = 0;
+  cart.forEach(c=> totalItens += c.qty);
 
-  grandTotalEl.textContent=
-    `Itens: ${totalItems} • Materiais totais: ${formatNumber(totalMaterials)} • Tipos: ${distinct}`;
+  grandTotalEl.textContent = `Itens: ${totalItens} • Materiais distintos: ${keys.length}`;
 }
-
-btnReset.addEventListener('click',()=>{
-  if(!confirm("Limpar tudo?")) return;
-  cart=[];
-  aggregate={};
-  renderCart();
-  renderMaterials();
-});
-
-btnExport.addEventListener('click',()=>{
-  const payload={createdAt:new Date().toISOString(),cart,aggregate};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='strokemasters-fabricacao.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
 
 renderCart();
 renderMaterials();
