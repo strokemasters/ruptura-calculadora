@@ -1,180 +1,137 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Strokemasters - Fabricação</title>
+<title>STROKEMASTERS - Fabricação (Ruptura)</title>
 
-<!-- Fonts (Google) -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;800&display=swap" rel="stylesheet">
 
 <style>
   :root{
-    --bg:#06121a;
-    --panel:#071824;
-    --accent:#0ea5ff;
-    --accent-2:#0b64b3;
-    --white:#e9f0f6;
-    --muted:#9fb0c0;
-    --glass: rgba(255,255,255,0.03);
-    --card-border: rgba(14,165,255,0.12);
+    --bg-1: #04121a;
+    --bg-2: #071827;
+    --panel: #071827;
+    --accent: #1da6ff;
+    --accent-dark: #0b64b3;
+    --white: #e9f0f6;
+    --muted: #9fb0c0;
+    --card: rgba(255,255,255,0.02);
+    --card-border: rgba(29,166,255,0.12);
   }
-
   *{box-sizing:border-box}
   body{
     margin:0;
-    background: linear-gradient(180deg,#04121a 0%, #071827 60%);
-    color:var(--white);
-    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     min-height:100vh;
+    background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:var(--white);
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    -webkit-font-smoothing:antialiased;
   }
 
   header{
     display:flex;
-    gap:16px;
+    gap:14px;
     align-items:center;
-    padding:18px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding:14px 18px;
+    border-bottom:1px solid rgba(255,255,255,0.03);
   }
-
-  header img.logo {
-    width:56px;
-    height:56px;
-    object-fit:contain;
-    border-radius:8px;
-    box-shadow: 0 6px 18px rgba(11,100,179,0.18);
+  header img.logo{
+    width:56px; height:56px; object-fit:cover; border-radius:8px;
+    box-shadow: 0 6px 18px rgba(11,100,179,0.12);
   }
-
-  header .title {
-    display:flex;
-    flex-direction:column;
-    line-height:1;
-  }
-  header .title h1{
-    margin:0;
-    font-size:20px;
-    letter-spacing:1px;
-  }
-  header .title p {
-    margin:0;
-    font-size:12px;
-    color:var(--muted);
-  }
+  header .title {display:flex; flex-direction:column;}
+  header h1{ margin:0; font-size:18px; letter-spacing:1px;}
+  header p{ margin:0; color:var(--muted); font-size:12px;}
 
   .wrap{
     display:flex;
     gap:28px;
-    padding:26px;
     align-items:flex-start;
     justify-content:center;
+    padding:22px;
   }
 
+  /* painel esqueda */
   .panel {
-    width: 420px;
-    background: rgba(255,255,255,0.02);
-    border-radius:12px;
+    width:420px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     padding:18px;
-    border: 1px solid var(--card-border);
-    box-shadow: 0 8px 28px rgba(2,8,12,0.6);
+    border-radius:12px;
+    border:1px solid var(--card-border);
+    box-shadow:0 10px 30px rgba(2,8,12,0.6);
+    backdrop-filter: blur(6px);
   }
-
-  .panel h2{
-    margin:0 0 10px 0;
-    font-size:18px;
-    color:var(--accent);
-  }
-
-  label{display:block; font-size:13px; color:var(--muted); margin-top:12px}
+  .panel h2{ margin:0 0 8px 0; color:var(--accent); font-size:18px; }
+  label{ display:block; font-size:13px; color:var(--muted); margin-top:12px;}
   select,input[type=number]{
-    width:100%;
-    padding:10px 12px;
-    border-radius:8px;
-    border:1px solid rgba(255,255,255,0.04);
-    background: rgba(255,255,255,0.02);
-    color:var(--white);
-    margin-top:6px;
+    width:100%; padding:10px 12px; margin-top:6px; border-radius:8px;
+    border:1px solid rgba(255,255,255,0.04); background:var(--card); color:var(--white);
     font-size:15px;
   }
 
-  .row {
-    display:flex;
-    gap:10px;
-    margin-top:12px;
-  }
-  .btn {
-    flex:1;
-    padding:11px;
-    border-radius:8px;
-    border:none;
-    cursor:pointer;
-    font-weight:700;
-    font-size:15px;
-  }
+  .row{ display:flex; gap:10px; margin-top:12px; }
+  .btn{ flex:1; padding:11px; border-radius:8px; border:none; cursor:pointer; font-weight:700; font-size:15px; }
+  .btn-add{ background: linear-gradient(180deg,var(--accent),var(--accent-dark)); color:#001827; box-shadow:0 8px 20px rgba(29,166,255,0.12);}
+  .btn-clear{ background: rgba(255,255,255,0.04); color:var(--white); border:1px solid rgba(255,255,255,0.03); }
 
-  .btn-add{
-    background: linear-gradient(180deg,var(--accent),var(--accent-2));
-    color:#001827;
-  }
+  .small-muted{ font-size:13px; color:var(--muted); margin-top:8px; }
 
-  .btn-clear{
-    background: rgba(255,255,255,0.04);
-    color:var(--white);
+  .cart-list{ margin-top:12px; max-height:220px; overflow:auto; border-radius:8px; }
+  .cart-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px; border-bottom:1px dashed rgba(255,255,255,0.03); font-weight:600;
   }
+  .cart-item button{ background:transparent; border:none; color:rgba(255,255,255,0.6); cursor:pointer; font-size:16px; }
 
+  /* painel direita */
   .results {
     width:480px;
-    background: rgba(255,255,255,0.02);
-    border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     padding:18px;
+    border-radius:12px;
     border:1px solid var(--card-border);
-    box-shadow:0 8px 28px rgba(2,8,12,0.6);
+    box-shadow:0 10px 30px rgba(2,8,12,0.6);
+    backdrop-filter: blur(6px);
   }
-
-  .results h3{
-    margin:0 0 8px 0;
-    color:var(--accent);
-  }
+  .results h3{ margin:0 0 8px 0; color:var(--accent); font-size:16px; }
 
   .materials {
-    margin-top:14px;
+    margin-top:8px;
     display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:8px 12px;
-  }
-
-  .mat {
-    background:var(--glass);
-    border-radius:8px;
-    padding:10px;
-    border:1px solid rgba(255,255,255,0.02);
-  }
-
-  .mat b{display:block; font-size:14px}
-  .mat span{color:var(--muted); font-size:13px}
-
-  .big-total{
-    margin-top:14px;
-    padding:12px;
-    border-radius:10px;
-    background:rgba(14,165,255,0.05);
-    color:var(--accent);
-    font-weight:800;
-    text-align:center;
-    font-size:16px;
-  }
-
-  .footer-actions{
-    margin-top:14px;
-    display:flex;
+    grid-template-columns: repeat(2, 1fr);
     gap:10px;
   }
+  .mat {
+    background: rgba(255,255,255,0.03);
+    padding:12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.02);
+    min-height:54px;
+  }
+  .mat b{ display:block; font-size:14px; }
+  .mat span{ color:var(--muted); font-size:13px;}
 
+  .summary {
+    margin-top:14px; padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(29,166,255,0.04), rgba(11,100,179,0.02));
+    color:var(--accent); font-weight:800; font-size:15px; text-align:center;
+    box-shadow:0 6px 18px rgba(11,100,179,0.06);
+  }
+
+  .actions { display:flex; gap:10px; margin-top:12px; }
+  .btn-danger { background:#333; color:white; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; flex:1; }
+
+  @media (max-width:960px){
+    .wrap{ flex-direction:column; padding:14px;}
+    .panel, .results { width:100% }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <img class="logo" src="logo.png" alt="logo">
+  <img class="logo" src="logo.png" alt="logo (suba logo.png no repo)">
   <div class="title">
     <h1>STROKEMASTERS - Fabricação</h1>
     <p>Calculadora de materiais • MP5 / AUG / C4</p>
@@ -183,7 +140,8 @@
 
 <div class="wrap">
 
-  <section class="panel">
+  <!-- controls -->
+  <section class="panel" aria-label="Controles">
     <h2>Nova Fabricação</h2>
 
     <label for="item">Selecione o item</label>
@@ -201,26 +159,37 @@
       <button class="btn btn-clear" id="btnClearLocal">LIMPAR</button>
     </div>
 
+    <div class="small-muted">Você pode adicionar várias receitas — elas serão somadas na lista.</div>
+
     <div style="margin-top:18px;">
       <h2 style="font-size:14px; color:var(--muted)">Itens adicionados</h2>
-      <div id="cart" style="max-height:220px; overflow:auto;"></div>
+      <div id="cart" class="cart-list"></div>
     </div>
   </section>
 
-  <aside class="results">
+  <!-- results -->
+  <aside class="results" aria-label="Materiais necessários">
     <h3>Materiais necessários</h3>
-    <div id="materials" class="materials"></div>
 
-    <div class="big-total" id="grandTotal">Itens: 0 • Materiais distintos: 0</div>
-
-    <div class="footer-actions">
-      <button class="btn btn-clear" id="btnReset">LIMPAR TUDO</button>
+    <div id="materials" class="materials">
+      <div style="color:var(--muted); grid-column: 1 / -1; padding:6px">Adicione itens para ver os materiais necessários.</div>
     </div>
+
+    <div class="summary" id="summary">Itens: 0 • Materiais distintos: 0 • Materiais totais: 0</div>
+
+    <div class="actions">
+      <button class="btn-danger" id="btnReset">LIMPAR TUDO</button>
+    </div>
+
   </aside>
 
 </div>
 
 <script>
+/*
+  Recipes (per 1 unit).
+  AUG here is EXPANDED (includes MP5 materials) based on the list you confirmed.
+*/
 const RECIPES = {
   mp5: {
     name: "MP5",
@@ -235,132 +204,147 @@ const RECIPES = {
       "Peças de Armas": 4
     }
   },
+  // AUG expanded (MP5 included) -> values from your confirmed totals
   aug: {
     name: "AUG",
     materials: {
-      "Alumínio": 225,
-      "Cobre": 265,
-      "Pregos Pequenos": 4,
-      "Tubo de Plástico": 4,
-      "Borracha": 265,
-      "Parafusos Pequenos": 4,
-      "Corpo de Rifle": 1,
-      "Peças de Armas": 6
+      "Alumínio": 260,           // 175 + 85
+      "Cobre": 290,              // 205 + 85
+      "Pregos Pequenos": 2,
+      "Tubo de Plástico": 2,
+      "Borracha": 380,           // 205 + 175
+      "Parafusos Pequenos": 2,
+      "Corpo de Sub": 1,
+      "Peças de Armas": 4,
+      "Fios de Cobre": 2,
+      "Porcas de Parafusos Pequenos": 2,
+      "Upgrade SMG MK2": 1
     }
   },
   c4: {
     name: "C4 Grande",
     materials: {
-      "C4 Pequena": 1,
-      "Plástico": 150,
-      "Dinamite": 60,
-      "Fios": 45,
-      "Parafusos Médios": 15,
-      "Circuito Avançado": 5
+      "Cobre": 80,
+      "Explosivos": 13,
+      "Plástico": 110,
+      "Fita Adesiva": 5,
+      "Lixo Eletrônico": 5
     }
   }
 };
 
-let cart = [];
-let aggregate = {};
+/* cart and aggregate */
+let cart = [];      // array of {id, key, qty}
+let aggregate = {}; // material -> qty
 
+/* dom refs */
 const itemEl = document.getElementById('item');
 const qtyEl = document.getElementById('qty');
+const btnAdd = document.getElementById('btnAdd');
+const btnClearLocal = document.getElementById('btnClearLocal');
 const cartDiv = document.getElementById('cart');
 const materialsDiv = document.getElementById('materials');
-const grandTotalEl = document.getElementById('grandTotal');
+const summaryEl = document.getElementById('summary');
+const btnReset = document.getElementById('btnReset');
 
-document.getElementById('btnAdd').addEventListener('click', ()=>{
+function formatNumber(n){ return n.toLocaleString('pt-BR'); }
+
+/* add item */
+btnAdd.addEventListener('click', ()=>{
   const key = itemEl.value;
-  const qty = parseInt(qtyEl.value);
-  if(qty < 1) return;
+  const qty = parseInt(qtyEl.value) || 0;
+  if(qty <= 0){ alert('Quantidade precisa ser 1 ou mais.'); qtyEl.focus(); return; }
 
-  cart.push({ key, qty });
+  // push with simple id (timestamp)
+  cart.push({ id: Date.now() + Math.random(), key, qty });
   recalc();
 });
 
-document.getElementById('btnClearLocal').addEventListener('click', ()=>{
-  itemEl.selectedIndex = 0;
+/* clear local inputs only */
+btnClearLocal.addEventListener('click', ()=>{
   qtyEl.value = 1;
+  itemEl.selectedIndex = 0;
 });
 
-document.getElementById('btnReset').addEventListener('click', ()=>{
+/* recalc */
+function recalc(){
+  // aggregate
+  aggregate = {};
+  cart.forEach(entry=>{
+    const recipe = RECIPES[entry.key];
+    if(!recipe) return;
+    const factor = entry.qty;
+    for(const mat in recipe.materials){
+      aggregate[mat] = (aggregate[mat] || 0) + recipe.materials[mat] * factor;
+    }
+  });
+  renderCart();
+  renderMaterials();
+}
+
+/* render cart */
+function renderCart(){
+  cartDiv.innerHTML = '';
+  if(cart.length === 0){
+    cartDiv.innerHTML = '<div style="padding:10px;color:var(--muted)">Nenhuma fabricação adicionada.</div>';
+    return;
+  }
+
+  cart.forEach((c, idx) => {
+    const r = RECIPES[c.key];
+    const el = document.createElement('div');
+    el.className = 'cart-item';
+    el.innerHTML = `<div>${r.name} × ${c.qty}</div>`;
+    const rm = document.createElement('button');
+    rm.textContent = '✕';
+    rm.title = 'Remover';
+    rm.onclick = ()=> {
+      cart.splice(idx,1);
+      recalc();
+    };
+    el.appendChild(rm);
+    cartDiv.appendChild(el);
+  });
+}
+
+/* render materials */
+function renderMaterials(){
+  materialsDiv.innerHTML = '';
+  const keys = Object.keys(aggregate);
+  if(keys.length === 0){
+    materialsDiv.innerHTML = '<div style="color:var(--muted); grid-column:1 / -1; padding:6px">Adicione itens para ver os materiais necessários.</div>';
+    summaryEl.textContent = 'Itens: 0 • Materiais distintos: 0 • Materiais totais: 0';
+    return;
+  }
+
+  keys.sort();
+  keys.forEach(k=>{
+    const box = document.createElement('div');
+    box.className = 'mat';
+    box.innerHTML = `<b>${k}</b><span>${formatNumber(aggregate[k])}</span>`;
+    materialsDiv.appendChild(box);
+  });
+
+  // summary totals
+  const totalItems = cart.reduce((s,c)=>s+c.qty,0);
+  const totalMaterials = Object.values(aggregate).reduce((s,n)=>s+n,0);
+  const distinct = keys.length;
+
+  summaryEl.textContent = `Itens: ${totalItems} • Materiais distintos: ${distinct} • Materiais totais: ${formatNumber(totalMaterials)}`;
+}
+
+/* clear all */
+btnReset.addEventListener('click', ()=>{
+  if(!confirm('Deseja limpar tudo?')) return;
   cart = [];
   aggregate = {};
   renderCart();
   renderMaterials();
 });
 
-function recalc(){
-  aggregate = {};
-  cart.forEach(entry=>{
-    const r = RECIPES[entry.key];
-    for(const mat in r.materials){
-      aggregate[mat] = (aggregate[mat]||0) + r.materials[mat] * entry.qty;
-    }
-  });
-  renderCart();
-  renderMaterials();
-}
-
-function renderCart(){
-  cartDiv.innerHTML = '';
-  if(cart.length === 0){
-    cartDiv.innerHTML = '<div style="color:var(--muted);padding:10px">Nenhuma fabricação adicionada.</div>';
-    return;
-  }
-
-  cart.forEach((c,idx)=>{
-    const r = RECIPES[c.key];
-    const div = document.createElement('div');
-    div.style.padding = '8px';
-    div.style.borderBottom = '1px dashed rgba(255,255,255,0.04)';
-    div.style.position = 'relative';
-    div.innerHTML = `${r.name} × ${c.qty}`;
-
-    const rm = document.createElement('button');
-    rm.textContent = '✕';
-    rm.style.position='absolute';
-    rm.style.right='6px';
-    rm.style.top='6px';
-    rm.style.border='none';
-    rm.style.background='transparent';
-    rm.style.color='rgba(255,255,255,0.6)';
-    rm.onclick = ()=>{
-      cart.splice(idx,1);
-      recalc();
-    };
-
-    div.appendChild(rm);
-    cartDiv.appendChild(div);
-  });
-}
-
-function renderMaterials(){
-  materialsDiv.innerHTML = '';
-  const keys = Object.keys(aggregate);
-  if(keys.length === 0){
-    materialsDiv.innerHTML = '<div style="color:var(--muted)">Adicione itens para ver os materiais.</div>';
-    grandTotalEl.textContent = 'Itens: 0 • Materiais distintos: 0';
-    return;
-  }
-
-  keys.sort().forEach(k=>{
-    const mat = document.createElement('div');
-    mat.className='mat';
-    mat.innerHTML = `<b>${k}</b><span>${aggregate[k]}</span>`;
-    materialsDiv.appendChild(mat);
-  });
-
-  let totalItens = 0;
-  cart.forEach(c=> totalItens += c.qty);
-
-  grandTotalEl.textContent = `Itens: ${totalItens} • Materiais distintos: ${keys.length}`;
-}
-
+/* initial render */
 renderCart();
 renderMaterials();
 </script>
-
 </body>
 </html>
