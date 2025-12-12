@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Strokemasters - Fabricação</title>
+
+<!-- Fonts (Google) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#06121a;
+    --panel:#071824;
+    --accent:#0ea5ff; /* cyan-blue */
+    --accent-2:#0b64b3; /* deeper blue */
+    --white:#e9f0f6;
+    --muted:#9fb0c0;
+    --glass: rgba(255,255,255,0.03);
+    --card-border: rgba(14,165,255,0.12);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background: linear-gradient(180deg,#04121a 0%, #071827 60%);
+    color:var(--white);
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    min-height:100vh;
+  }
+
+  header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    padding:18px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  header img.logo {
+    width:56px;
+    height:56px;
+    object-fit:contain;
+    border-radius:8px;
+    box-shadow: 0 6px 18px rgba(11,100,179,0.18), inset 0 -2px 6px rgba(255,255,255,0.03);
+  }
+
+  header .title {
+    display:flex;
+    flex-direction:column;
+    line-height:1;
+  }
+  header .title h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:1px;
+    color:var(--white);
+  }
+  header .title p {
+    margin:0;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* layout */
+  .wrap{
+    display:flex;
+    gap:28px;
+    padding:26px;
+    align-items:flex-start;
+    justify-content:center;
+  }
+
+  /* left: controls */
+  .panel {
+    width: 420px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;
+    padding:18px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 28px rgba(2,8,12,0.6);
+    backdrop-filter: blur(6px);
+  }
+
+  .panel h2{
+    margin:0 0 10px 0;
+    font-size:18px;
+    color:var(--accent);
+  }
+
+  label{display:block; font-size:13px; color:var(--muted); margin-top:12px}
+  select,input[type=number]{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color:var(--white);
+    margin-top:6px;
+    font-size:15px;
+  }
+
+  .row {
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  .btn {
+    flex:1;
+    padding:11px;
+    border-radius:8px;
+    border:none;
+    cursor:pointer;
+    font-weight:700;
+    font-size:15px;
+  }
+
+  .btn-add{
+    background: linear-gradient(180deg,var(--accent),var(--accent-2));
+    color:#001827;
+    box-shadow:0 8px 20px rgba(14,165,255,0.16);
+  }
+
+  .btn-clear{
+    background: rgba(255,255,255,0.04);
+    color:var(--white);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .small-muted{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:8px;
+  }
+
+  /* right: results */
+  .results {
+    width:480px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;
+    padding:18px;
+    border:1px solid var(--card-border);
+    box-shadow:0 8px 28px rgba(2,8,12,0.6);
+    backdrop-filter: blur(6px);
+    height:fit-content;
+  }
+
+  .results h3{
+    margin:0 0 8px 0;
+    color:var(--accent);
+    font-size:16px;
+  }
+
+  .cart-list{
+    margin-top:8px;
+    border-radius:8px;
+    overflow:hidden;
+  }
+
+  .cart-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px;
+    border-bottom:1px dashed rgba(255,255,255,0.03);
+    font-weight:600;
+    color:var(--white);
+  }
+
+  .materials {
+    margin-top:14px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:8px 12px;
+  }
+
+  .mat {
+    background:var(--glass);
+    border-radius:8px;
+    padding:10px;
+    border:1px solid rgba(255,255,255,0.02);
+  }
+
+  .mat b{display:block; font-size:14px; color:var(--white)}
+  .mat span{color:var(--muted); font-size:13px}
+
+  .footer-actions{
+    margin-top:14px;
+    display:flex;
+    gap:10px;
+  }
+
+  .big-total{
+    margin-top:14px;
+    padding:12px;
+    border-radius:10px;
+    background:linear-gradient(180deg, rgba(14,165,255,0.06), rgba(11,100,179,0.03));
+    color:var(--accent);
+    font-weight:800;
+    font-size:18px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(11,100,179,0.08);
+  }
+
+  /* responsive */
+  @media (max-width:960px){
+    .wrap{flex-direction:column; padding:18px}
+    .panel, .results { width:100% }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- put your logo file in the repo and name it `logo.png` or change the src -->
+  <img class="logo" src="logo.png" alt="logo (coloque logo.png no repositório)">
+  <div class="title">
+    <h1>STROKEMASTERS - Fabricação</h1>
+    <p>Calculadora de materiais • MP5 / AUG / C4</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- left: controls -->
+  <section class="panel" aria-label="Controles">
+    <h2>Nova Fabricação</h2>
+
+    <label for="item">Selecione o item</label>
+    <select id="item">
+      <option value="mp5">MP5</option>
+      <option value="aug">AUG</option>
+      <option value="c4">C4 Grande</option>
+    </select>
+
+    <label for="qty">Quantidade</label>
+    <input id="qty" type="number" min="1" value="1" />
+
+    <div class="row">
+      <button class="btn btn-add" id="btnAdd">ADICIONAR</button>
+      <button class="btn btn-clear" id="btnClearLocal">LIMPAR</button>
+    </div>
+
+    <div class="small-muted">Você pode adicionar várias receitas — elas serão somadas na lista.</div>
+
+    <div style="margin-top:18px;">
+      <h2 style="font-size:14px; color:var(--muted); margin-bottom:8px">Itens adicionados</h2>
+      <div id="cart" class="cart-list" style="max-height:220px; overflow:auto;"></div>
+    </div>
+  </section>
+
+  <!-- right: results -->
+  <aside class="results" aria-label="Materiais">
+    <h3>Materiais necessários</h3>
+
+    <div id="materials" class="materials">
+      <!-- dynamically filled -->
+    </div>
+
+    <div class="big-total" id="grandTotal">TOTAL (indicativo): R$ 0,00</div>
+
+    <div class="footer-actions">
+      <button class="btn btn-clear" id="btnReset">LIMPAR TUDO</button>
+      <button class="btn btn-add" id="btnExport">EXPORTAR JSON</button>
+    </div>
+
+    <div style="margin-top:10px; font-size:13px; color:var(--muted)">
+      Dica: selecione o item, insira a quantidade e clique <b>ADICIONAR</b>. Depois pode exportar a lista ou limpar tudo.
+    </div>
+  </aside>
+
+</div>
+
+<script>
+/*
+  Receitas definidas (por 1 unidade)
+  Valores conforme sua confirmação
+*/
+const RECIPES = {
+  mp5: {
+    name: "MP5",
+    materials: {
+      "Alumínio": 175,
+      "Cobre": 205,
+      "Pregos Pequenos": 2,
+      "Tubo de Plástico": 2,
+      "Borracha": 205,
+      "Parafusos Pequenos": 2,
+      "Corpo de Sub": 1,
+      "Peças de Armas": 4
+    },
+    priceIndicative: 0
+  },
+  aug: {
+    name: "AUG",
+    materials: {
+      "Alumínio": 225,
+      "Cobre": 265,
+      "Pregos Pequenos": 4,
+      "Tubo de Plástico": 4,
+      "Borracha": 265,
+      "Parafusos Pequenos": 4,
+      "Corpo de Rifle": 1,
+      "Peças de Armas": 6
+    },
+    priceIndicative: 0
+  },
+  c4: {
+    name: "C4 Grande",
+    materials: {
+      "C4 Pequena": 1,
+      "Plástico": 150,
+      "Dinamite": 60,
+      "Fios": 45,
+      "Parafusos Médios": 15,
+      "Circuito Avançado": 5
+    },
+    priceIndicative: 0
+  }
+};
+
+/* cart (array of {key,qty}) and aggregated materials */
+let cart = [];
+let aggregate = {};
+
+/* DOM refs */
+const itemEl = document.getElementById('item');
+const qtyEl = document.getElementById('qty');
+const btnAdd = document.getElementById('btnAdd');
+const btnClearLocal = document.getElementById('btnClearLocal');
+const cartDiv = document.getElementById('cart');
+const materialsDiv = document.getElementById('materials');
+const grandTotalEl = document.getElementById('grandTotal');
+const btnReset = document.getElementById('btnReset');
+const btnExport = document.getElementById('btnExport');
+
+/* Helpers */
+function formatNumber(n){
+  if (typeof n !== 'number') return n;
+  return n.toLocaleString('pt-BR');
+}
+
+/* Add item to cart */
+btnAdd.addEventListener('click', ()=>{
+  const key = itemEl.value;
+  let qty = parseInt(qtyEl.value) || 0;
+  if(qty <= 0){
+    alert('Quantidade precisa ser 1 ou mais.');
+    qtyEl.focus();
+    return;
+  }
+
+  // push to cart
+  cart.push({key, qty});
+  recalcAggregate();
+  renderCart();
+  renderMaterials();
+});
+
+/* Clear only input fields (not entire cart) */
+btnClearLocal.addEventListener('click', ()=>{
+  qtyEl.value = 1;
+  itemEl.selectedIndex = 0;
+});
+
+/* Calculate aggregated materials */
+function recalcAggregate(){
+  aggregate = {}; // reset
+  cart.forEach(entry => {
+    const recipe = RECIPES[entry.key];
+    if(!recipe) return;
+    const factor = entry.qty;
+    // for each material add factor*amount
+    for(const mat in recipe.materials){
+      const need = recipe.materials[mat] * factor;
+      aggregate[mat] = (aggregate[mat] || 0) + need;
+    }
+  });
+}
+
+/* Render cart list */
+function renderCart(){
+  cartDiv.innerHTML = '';
+  if(cart.length === 0){
+    cartDiv.innerHTML = '<div style="padding:10px;color:var(--muted)">Nenhuma fabricação adicionada.</div>';
+    return;
+  }
+  cart.forEach((c, idx) => {
+    const recipe = RECIPES[c.key];
+    const el = document.createElement('div');
+    el.className = 'cart-item';
+    el.innerHTML = `<div>${recipe.name} × ${c.qty}</div>
+                    <div style="opacity:0.9">${c.qty}x</div>`;
+    // add remove button
+    el.style.position='relative';
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '✕';
+    removeBtn.title = 'Remover este item';
+    removeBtn.style.position='absolute';
+    removeBtn.style.right='8px';
+    removeBtn.style.top='8px';
+    removeBtn.style.background='transparent';
+    removeBtn.style.color='rgba(255,255,255,0.6)';
+    removeBtn.style.border='none';
+    removeBtn.style.cursor='pointer';
+    removeBtn.addEventListener('click', ()=> {
+      cart.splice(idx,1);
+      recalcAggregate();
+      renderCart();
+      renderMaterials();
+    });
+    el.appendChild(removeBtn);
+    cartDiv.appendChild(el);
+  });
+}
+
+/* Render aggregated materials */
+function renderMaterials(){
+  materialsDiv.innerHTML = '';
+  const keys = Object.keys(aggregate);
+  if(keys.length === 0){
+    materialsDiv.innerHTML = '<div style="color:var(--muted)">Adicione itens para ver os materiais necessários.</div>';
+    grandTotalEl.textContent = 'TOTAL (indicativo): R$ 0,00';
+    return;
+  }
+  // sort materials alphabetically (optional)
+  keys.sort();
+  keys.forEach(k => {
+    const amount = aggregate[k];
+    const box = document.createElement('div');
+    box.className='mat';
+    box.innerHTML = `<b>${k}</b><span>${formatNumber(amount)}</span>`;
+    materialsDiv.appendChild(box);
+  });
+
+  // optional indicative total price: sum of materials * factor
+  // You don't have price data for materials; leave indicative as count summary
+  let totalItems = 0;
+  cart.forEach(c => totalItems += c.qty);
+  grandTotalEl.textContent = `Itens: ${totalItems} • Materiais distintos: ${keys.length}`;
+}
+
+/* Reset everything */
+btnReset.addEventListener('click', ()=>{
+  if(!confirm('Limpar tudo?')) return;
+  cart = [];
+  aggregate = {};
+  renderCart();
+  renderMaterials();
+});
+
+/* Export JSON (downloads a file with aggregated materials + cart) */
+btnExport.addEventListener('click', ()=>{
+  const payload = {
+    createdAt: new Date().toISOString(),
+    cart,
+    aggregate
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'strokemasters-fabricacao.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* initial render */
+renderCart();
+renderMaterials();
+</script>
+
+</body>
+</html>
