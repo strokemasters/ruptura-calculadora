@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -53,7 +52,7 @@
     padding:22px;
   }
 
-  /* painel esqueda */
+  /* painel esquedo */
   .panel {
     width:420px;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
@@ -141,7 +140,7 @@
 <div class="wrap">
 
   <!-- controls -->
-  <section class="panel" aria-label="Controles">
+  <section class="panel">
     <h2>Nova Fabricação</h2>
 
     <label for="item">Selecione o item</label>
@@ -168,7 +167,7 @@
   </section>
 
   <!-- results -->
-  <aside class="results" aria-label="Materiais necessários">
+  <aside class="results">
     <h3>Materiais necessários</h3>
 
     <div id="materials" class="materials">
@@ -186,10 +185,7 @@
 </div>
 
 <script>
-/*
-  Recipes (per 1 unit).
-  AUG here is EXPANDED (includes MP5 materials) based on the list you confirmed.
-*/
+/* receitas */
 const RECIPES = {
   mp5: {
     name: "MP5",
@@ -204,15 +200,14 @@ const RECIPES = {
       "Peças de Armas": 4
     }
   },
-  // AUG expanded (MP5 included) -> values from your confirmed totals
   aug: {
     name: "AUG",
     materials: {
-      "Alumínio": 260,           // 175 + 85
-      "Cobre": 290,              // 205 + 85
+      "Alumínio": 260,
+      "Cobre": 290,
       "Pregos Pequenos": 2,
       "Tubo de Plástico": 2,
-      "Borracha": 380,           // 205 + 175
+      "Borracha": 380,
       "Parafusos Pequenos": 2,
       "Corpo de Sub": 1,
       "Peças de Armas": 4,
@@ -233,11 +228,9 @@ const RECIPES = {
   }
 };
 
-/* cart and aggregate */
-let cart = [];      // array of {id, key, qty}
-let aggregate = {}; // material -> qty
+let cart = [];
+let aggregate = {};
 
-/* dom refs */
 const itemEl = document.getElementById('item');
 const qtyEl = document.getElementById('qty');
 const btnAdd = document.getElementById('btnAdd');
@@ -249,102 +242,86 @@ const btnReset = document.getElementById('btnReset');
 
 function formatNumber(n){ return n.toLocaleString('pt-BR'); }
 
-/* add item */
 btnAdd.addEventListener('click', ()=>{
   const key = itemEl.value;
-  const qty = parseInt(qtyEl.value) || 0;
-  if(qty <= 0){ alert('Quantidade precisa ser 1 ou mais.'); qtyEl.focus(); return; }
-
-  // push with simple id (timestamp)
-  cart.push({ id: Date.now() + Math.random(), key, qty });
+  const qty = parseInt(qtyEl.value);
+  if(qty < 1){ alert("Quantidade inválida."); return; }
+  cart.push({ key, qty });
   recalc();
 });
 
-/* clear local inputs only */
 btnClearLocal.addEventListener('click', ()=>{
   qtyEl.value = 1;
   itemEl.selectedIndex = 0;
 });
 
-/* recalc */
-function recalc(){
-  // aggregate
-  aggregate = {};
-  cart.forEach(entry=>{
-    const recipe = RECIPES[entry.key];
-    if(!recipe) return;
-    const factor = entry.qty;
-    for(const mat in recipe.materials){
-      aggregate[mat] = (aggregate[mat] || 0) + recipe.materials[mat] * factor;
-    }
-  });
-  renderCart();
-  renderMaterials();
-}
-
-/* render cart */
-function renderCart(){
-  cartDiv.innerHTML = '';
-  if(cart.length === 0){
-    cartDiv.innerHTML = '<div style="padding:10px;color:var(--muted)">Nenhuma fabricação adicionada.</div>';
-    return;
-  }
-
-  cart.forEach((c, idx) => {
-    const r = RECIPES[c.key];
-    const el = document.createElement('div');
-    el.className = 'cart-item';
-    el.innerHTML = `<div>${r.name} × ${c.qty}</div>`;
-    const rm = document.createElement('button');
-    rm.textContent = '✕';
-    rm.title = 'Remover';
-    rm.onclick = ()=> {
-      cart.splice(idx,1);
-      recalc();
-    };
-    el.appendChild(rm);
-    cartDiv.appendChild(el);
-  });
-}
-
-/* render materials */
-function renderMaterials(){
-  materialsDiv.innerHTML = '';
-  const keys = Object.keys(aggregate);
-  if(keys.length === 0){
-    materialsDiv.innerHTML = '<div style="color:var(--muted); grid-column:1 / -1; padding:6px">Adicione itens para ver os materiais necessários.</div>';
-    summaryEl.textContent = 'Itens: 0 • Materiais distintos: 0 • Materiais totais: 0';
-    return;
-  }
-
-  keys.sort();
-  keys.forEach(k=>{
-    const box = document.createElement('div');
-    box.className = 'mat';
-    box.innerHTML = `<b>${k}</b><span>${formatNumber(aggregate[k])}</span>`;
-    materialsDiv.appendChild(box);
-  });
-
-  // summary totals
-  const totalItems = cart.reduce((s,c)=>s+c.qty,0);
-  const totalMaterials = Object.values(aggregate).reduce((s,n)=>s+n,0);
-  const distinct = keys.length;
-
-  summaryEl.textContent = `Itens: ${totalItems} • Materiais distintos: ${distinct} • Materiais totais: ${formatNumber(totalMaterials)}`;
-}
-
-/* clear all */
 btnReset.addEventListener('click', ()=>{
-  if(!confirm('Deseja limpar tudo?')) return;
+  if(!confirm("Deseja limpar tudo?")) return;
   cart = [];
   aggregate = {};
   renderCart();
   renderMaterials();
 });
 
-/* initial render */
+function recalc(){
+  aggregate = {};
+  cart.forEach(entry=>{
+    const recipe = RECIPES[entry.key];
+    for(const m in recipe.materials){
+      aggregate[m] = (aggregate[m] || 0) + recipe.materials[m] * entry.qty;
+    }
+  });
+  renderCart();
+  renderMaterials();
+}
+
+function renderCart(){
+  cartDiv.innerHTML = "";
+  if(cart.length === 0){
+    cartDiv.innerHTML = '<div style="padding:10px;color:var(--muted)">Nenhuma fabricação adicionada.</div>';
+    return;
+  }
+
+  cart.forEach((c, i)=>{
+    const el = document.createElement("div");
+    el.className = "cart-item";
+    el.innerHTML = `<div>${RECIPES[c.key].name} × ${c.qty}</div>`;
+    const rm = document.createElement("button");
+    rm.textContent = "✕";
+    rm.onclick = () => { cart.splice(i,1); recalc(); };
+    el.appendChild(rm);
+    cartDiv.appendChild(el);
+  });
+}
+
+function renderMaterials(){
+  materialsDiv.innerHTML = "";
+  const keys = Object.keys(aggregate);
+  if(keys.length === 0){
+    materialsDiv.innerHTML = '<div style="color:var(--muted); grid-column:1 / -1; padding:6px">Adicione itens para ver os materiais necessários.</div>';
+    summaryEl.textContent = "Itens: 0 • Materiais distintos: 0 • Materiais totais: 0";
+    return;
+  }
+
+  keys.sort();
+  keys.forEach(k=>{
+    const box = document.createElement("div");
+    box.className = "mat";
+    box.innerHTML = `<b>${k}</b><span>${formatNumber(aggregate[k])}</span>`;
+    materialsDiv.appendChild(box);
+  });
+
+  const totalItems = cart.reduce((s,c)=>s+c.qty,0);
+  const distinct = keys.length;
+  const totalMaterials = Object.values(aggregate).reduce((s,n)=>s+n,0);
+
+  summaryEl.textContent =
+    `Itens: ${totalItems} • Materiais distintos: ${distinct} • Materiais totais: ${formatNumber(totalMaterials)}`;
+}
+
 renderCart();
 renderMaterials();
 </script>
+
 </body>
 </html>
